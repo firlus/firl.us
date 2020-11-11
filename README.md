@@ -1,4 +1,16 @@
-# POST /api/shortcuts/
+# firl.us URL shortener
+firl.us provides a small http server in go which provides a way to shorten URLs with your own domain as well as an API and an admin panel to manage shortcuts.
+
+I started this project mainly to learn the Go programming language and ecosystem.
+Feel free to open issues and pull requests!
+
+## Installation
+ToDo
+
+### API Documentation
+Unfinished
+
+### POST /api/shortcut/
 200 If inserted
 400 If params are wrong
     - path len > 50
@@ -7,19 +19,23 @@
 409 If already exists
 500 If another error occurs
 
-# GET /api/shortcuts/:path
-200 If success {"path","url"}
+### GET /api/shortcuts/:path
+200 If success {"path", "url"}
 404 If not exists
 500 If another error occurrs
 
-# PUT /api/shortcuts/:path
+### PUT /api/shortcuts/:path
 200 If success
 400 If params are wrong
 404 If not exists
 500 If another error occurrs
 
-# DELETE /api/shortcuts/:path
-200 If success
+### DELETE /api/shortcuts/:path
+200 If deleted 
 400 If params are wrong
 404 If not exists
+500 If another error occurrs
+
+### GET /api/shortcuts
+200 If success
 500 If another error occurrs
