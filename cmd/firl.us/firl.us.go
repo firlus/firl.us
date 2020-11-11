@@ -22,11 +22,11 @@ func main() {
 	}
 	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
 	if mysqlPassword == "" {
-		mysqlPassword = "bidendid911"
+		mysqlPassword = "mysqlpassword"
 	}
 	mysqlServer := os.Getenv("MYSQL_SERVER")
 	if mysqlServer == "" {
-		mysqlServer = "localhost:3306"
+		mysqlServer = "db:3306"
 	}
 	mysqlDbName := os.Getenv("MYSQL_DBNAME")
 	if mysqlDbName == "" {
