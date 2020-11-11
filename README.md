@@ -34,7 +34,3 @@ Unfinished
 200 If deleted
 404 If not exists
 500 If another error occurrs
-
-### GET /api/shortcuts
-200 If success
-500 If another error occurrs
