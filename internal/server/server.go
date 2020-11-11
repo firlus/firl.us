@@ -37,5 +37,38 @@ func Setup(port int, store store.Store) {
 		}
 
 	})
+	r.PUT("/api/shortcuts/:path", func(c *gin.Context) {
+		path := c.Param("path")
+		url := c.PostForm("url")
+		if !store.ShortcutExists(path) {
+			c.AbortWithStatus(404)
+		}
+		shortcut := model.Shortcut{
+			Path: path,
+			URL:  url}
+		if !shortcut.IsValid() {
+			c.AbortWithStatus(400)
+		} else {
+			err := store.UpdateShortcut(&shortcut)
+			if err != nil {
+				c.AbortWithStatus(500)
+			} else {
+				c.JSON(200, gin.H{})
+			}
+		}
+	})
+	r.DELETE("/api/shortcuts/:path", func(c *gin.Context) {
+		path := c.Param("path")
+		if !store.ShortcutExists(path) {
+			c.AbortWithStatus(404)
+		} else {
+			err := store.DeleteShortcut(path)
+			if err != nil {
+				c.AbortWithStatus(500)
+			} else {
+				c.JSON(200, gin.H{})
+			}
+		}
+	})
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
