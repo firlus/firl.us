@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"os"
-	"strconv"
 
 	"firlus.dev/firl.us/internal/server"
 
@@ -10,11 +10,12 @@ import (
 )
 
 func main() {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
-	if port == 0 {
-		port = 42001
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":42001"
+	} else {
+		port = fmt.Sprintf(":%v", port)
 	}
-	//writeAccessPassword := os.Getenv("WRITE_ACCESS_PASSWORD")
 	mysqlUser := os.Getenv("MYSQL_USER")
 	if mysqlUser == "" {
 		mysqlUser = "root"
