@@ -7,7 +7,7 @@ import (
 )
 
 // Setup setup
-func Setup(port int, store store.Store) {
+func Setup(port string, store store.Store) {
 	r := gin.Default()
 	r.POST("/api/shortcuts", func(c *gin.Context) {
 		path := c.PostForm("path")
@@ -70,5 +70,5 @@ func Setup(port int, store store.Store) {
 			}
 		}
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
