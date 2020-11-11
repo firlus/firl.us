@@ -39,11 +39,28 @@ func (store *Store) ShortcutExists(path string) bool {
 	return shortcut.IsValid()
 }
 
-/*
+// UpdateShortcut updates an existing shortcut in the database
 func (store *Store) UpdateShortcut(shortcut *model.Shortcut) error {
-
+	stmt, err := store.db.Prepare("UPDATE Shortcuts SET path=?, url=? WHERE path=?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(shortcut.Path, shortcut.URL, shortcut.Path)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
+// DeleteShortcut delets an existing shortcut in the database
 func (store *Store) DeleteShortcut(path string) error {
-
-}*/
+	stmt, err := store.db.Prepare("DELETE FROM Shortcuts WHERE path=?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(path)
+	if err != nil {
+		return err
+	}
+	return nil
+}
