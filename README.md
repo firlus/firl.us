@@ -31,8 +31,7 @@ Unfinished
 500 If another error occurrs
 
 ### DELETE /api/shortcuts/:path
-200 If deleted 
-400 If params are wrong
+200 If deleted
 404 If not exists
 500 If another error occurrs
 

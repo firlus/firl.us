@@ -52,7 +52,15 @@ func (store *Store) UpdateShortcut(shortcut *model.Shortcut) error {
 	return nil
 }
 
-/*
+// DeleteShortcut delets an existing shortcut in the database
 func (store *Store) DeleteShortcut(path string) error {
-
-}*/
+	stmt, err := store.db.Prepare("DELETE FROM Shortcuts WHERE path=?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(path)
+	if err != nil {
+		return err
+	}
+	return nil
+}
