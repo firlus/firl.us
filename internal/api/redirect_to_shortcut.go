@@ -6,7 +6,7 @@ import (
 
 // RedirectToShortcut handles the endpoint GET /:path
 func RedirectToShortcut(c *gin.Context) {
-	path := c.Param("path")
+	path := c.Param("api")
 	shortcut, _ := Storage.ReadShortcut(path)
 	if !shortcut.IsValid() {
 		c.AbortWithStatus(404)
