@@ -7,7 +7,7 @@ Feel free to open issues and pull requests!
 ## Installation
 Just run src/firl.us/firl.us.go
 
-### API Documentation
+## API Documentation
 
 ### POST /api/shortcut/
 * 200 If inserted
