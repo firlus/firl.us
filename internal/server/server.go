@@ -15,6 +15,7 @@ func Setup(port string, storage store.Store) {
 	apiRoute := router.Group("/api")
 	router.GET("/:api", api.RedirectToShortcut)
 	apiRoute.POST("/shortcuts", api.ShortcutPost)
+	apiRoute.GET("/shortcuts", api.AllShortcutsGet)
 
 	// This route is different (due to Gin's annoying router.)
 	// Should look like that:
