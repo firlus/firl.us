@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "axios": "^0.21.0",
+    "bootstrap": "^5.0.0-alpha3",
+    "popper.js": "^1.16.1",
     "vue": "^2.6.12"
   }
 }
