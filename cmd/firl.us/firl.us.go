@@ -12,7 +12,7 @@ import (
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":42001"
+		port = ":80"
 	} else {
 		port = fmt.Sprintf(":%v", port)
 	}
