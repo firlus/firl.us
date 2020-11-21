@@ -23,6 +23,7 @@ func Setup(port string, storage store.Store) {
 		Credentials: true,
 		ValidateHeaders: false,
 	}))
+	router.Static("/dashboard", "./frontend/public")
 	apiRoute := router.Group("/api")
 	router.GET("/:api", api.RedirectToShortcut)
 	apiRoute.POST("/shortcuts", api.ShortcutPost)
