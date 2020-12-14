@@ -3,10 +3,14 @@ package api
 import (
 	"firlus.dev/firl.us/internal/model"
 	"github.com/gin-gonic/gin"
+	"firlus.dev/firl.us/internal/common"
 )
 
 // ShortcutPost handles the endpoint POST /api/shortcuts
 func ShortcutPost(c *gin.Context) {
+	if !common.ValidatePassword(c.Request.Header["Authorization"][0]) {
+		c.AbortWithStatus(403)
+	}
 	path := c.PostForm("path")
 	url := c.PostForm("url")
 	// TODO validate parameters

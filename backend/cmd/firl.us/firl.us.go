@@ -1,13 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
 	"firlus.dev/firl.us/internal/server"
 
+	"firlus.dev/firl.us/internal/common"
 	"firlus.dev/firl.us/internal/store"
 )
+
+// AdminPassword contains password for admin panel
+var AdminPassword string
 
 func main() {
 	port := os.Getenv("PORT")
@@ -32,6 +37,8 @@ func main() {
 	if mysqlDbName == "" {
 		mysqlDbName = "firlus_url"
 	}
+	adminPassword := flag.String("password", "admin", "Password to access API and admin panel")
+	common.SetPassword(*adminPassword)
 	store := store.Setup(mysqlUser, mysqlPassword, mysqlServer, mysqlDbName)
 	server.Setup(port, store)
 }

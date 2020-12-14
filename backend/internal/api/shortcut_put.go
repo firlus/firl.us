@@ -3,10 +3,14 @@ package api
 import (
 	"firlus.dev/firl.us/internal/model"
 	"github.com/gin-gonic/gin"
+	"firlus.dev/firl.us/internal/common"
 )
 
 // ShortcutPut handles the endpoint PUT /api/shortcuts/:path
 func ShortcutPut(c *gin.Context) {
+	if common.ValidatePassword(c.Request.Header["Authorization"][0]) {
+		c.AbortWithStatus(403)
+	}
 	path := c.Param("path")
 	url := c.PostForm("url")
 	if !Storage.ShortcutExists(path) {
