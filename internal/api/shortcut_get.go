@@ -1,19 +1,28 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
+	"encoding/json"
+	"net/http"
+	"strings"
+
+	"firlus.dev/firl.us/internal/common"
 )
 
 // ShortcutGet handles the endpoint GET /api/shortcuts/:path
-func ShortcutGet(c *gin.Context) {
-	path := c.Param("path")
-	shortcut, _ := Storage.ReadShortcut(path)
-	if !shortcut.IsValid() && c.Param("api") == "api" && c.Param("shortcuts") == "shortcuts" { // Gin's router is shit so this mess is necessary
-		c.AbortWithStatus(404)
+func ShortcutGet(w http.ResponseWriter, r *http.Request) {
+	password := r.Header.Get("Authorization")
+	if !common.ValidatePassword(password) {
+		http.Error(w, "Wrong password", http.StatusForbidden)
 	} else {
-		c.JSON(200, gin.H{
-			"path": shortcut.Path,
-			"url":  shortcut.URL})
-	}
+		pathSlice := strings.Split(r.URL.Path, "/")
+		path := pathSlice[len(pathSlice)-1]
 
+		shortcut, _ := Storage.ReadShortcut(path)
+		if !shortcut.IsValid() { // Gin's router is shit so this mess is necessary
+			http.Error(w, "Shortcut does not exist", http.StatusNotFound)
+		} else {
+			shortcutBytestream, _ := json.Marshal(shortcut)
+			w.Write(shortcutBytestream)
+		}
+	}
 }

@@ -1,37 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"flag"
 
 	"firlus.dev/firl.us/internal/server"
 
+	"firlus.dev/firl.us/internal/common"
 	"firlus.dev/firl.us/internal/store"
 )
 
+// AdminPassword contains password for admin panel
+var AdminPassword string
+
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = ":80"
-	} else {
-		port = fmt.Sprintf(":%v", port)
-	}
-	mysqlUser := os.Getenv("MYSQL_USER")
-	if mysqlUser == "" {
-		mysqlUser = "root"
-	}
-	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
-	if mysqlPassword == "" {
-		mysqlPassword = "mysqlpassword"
-	}
-	mysqlServer := os.Getenv("MYSQL_SERVER")
-	if mysqlServer == "" {
-		mysqlServer = "db:3306"
-	}
-	mysqlDbName := os.Getenv("MYSQL_DBNAME")
-	if mysqlDbName == "" {
-		mysqlDbName = "firlus_url"
-	}
-	store := store.Setup(mysqlUser, mysqlPassword, mysqlServer, mysqlDbName)
-	server.Setup(port, store)
+
+	port := flag.String("port", "42001", "Port")
+	mysqlUser := flag.String("mysql-user", "root", "User for MySQL-Database")
+	mysqlPassword := flag.String("mysql-password", "mysqlpassword", "Password for MySQL-Database")
+	mysqlServer := flag.String("mysql-server", "localhost:3306", "Address of MySQL-Server")
+	mysqlDbName := flag.String("mysql-db", "firlus_url", "Name of MySQL database")
+	adminPassword := flag.String("password", "admin", "Password to access API and admin panel")
+	flag.Parse()
+
+	common.SetPassword(*adminPassword)
+	store := store.Setup(*mysqlUser, *mysqlPassword, *mysqlServer, *mysqlDbName)
+	server.Setup(*port, store)
 }

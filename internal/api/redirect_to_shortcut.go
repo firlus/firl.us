@@ -1,17 +1,17 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/http"
+	"strings"
 )
 
 // RedirectToShortcut handles the endpoint GET /:path
-func RedirectToShortcut(c *gin.Context) {
-	path := c.Param("api")
+func RedirectToShortcut(w http.ResponseWriter, r *http.Request) {
+	path := strings.Trim(r.URL.Path, "/")
 	shortcut, _ := Storage.ReadShortcut(path)
 	if !shortcut.IsValid() {
-		c.AbortWithStatus(404)
+		http.Error(w, "Shortcut not found", http.StatusNotFound)
 	} else {
-		c.Redirect(301, shortcut.URL)
-		c.Abort()
+		http.Redirect(w, r, shortcut.URL, http.StatusPermanentRedirect)
 	}
 }

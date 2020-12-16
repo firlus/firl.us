@@ -1,23 +1,31 @@
 version: "3.3"
 
 services:
-  server: # <== we aren't going to open :80 here because traefik is going to serve this on entrypoint 'web'
-  ## :80 is already exposed from within the container ##
-    image: firl.us 
+  firl.us:
+    ports:
+      - 80:80
+    image: firl.us
     restart: always
-    container_name: firl.us 
+    container_name: firl.us
+    environment:
+      PORT: 80
+      MYSQL_SERVER: db:3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mysqlpassword
+      MYSQL_DB: firlus_url
+      ADMIN_PASSWORD: admin
     networks:
       - web
       - backend
     labels:
       #### Labels define the behavior and rules of the traefik proxy for this container ####
       - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.http.routers.firlus_url-web.rule=Host(`firl.us`)" # <== Your Domain Name goes here for the htt$
-      - "traefik.http.routers.firlus_url-web.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
-      - "traefik.http.routers.firlus_url-web.middlewares=redirect@file" # <== This is a middleware to redirect to https
-      - "traefik.http.routers.firlus_url-secured.rule=Host(`firl.us`)" # <== Your Domain Name for the https rul$
-      - "traefik.http.routers.firlus_url-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
-      - "traefik.http.routers.firlus_url-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+      - "traefik.http.routers.firlus_url-backend-web.rule=Host(`firl.us`)" # <== Your Domain Name goes here for the htt$
+      - "traefik.http.routers.firlus_url-backend-web.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+      - "traefik.http.routers.firlus_url-backend-web.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.firlus_url-backend-secured.rule=Host(`firl.us`)" # <== Your Domain Name for the https rul$
+      - "traefik.http.routers.firlus_url-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.firlus_url-backend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
   db:
     image: mysql
     restart: always
@@ -28,7 +36,7 @@ services:
       - backend
     command: --init-file /data/application/init.sql
     volumes:
-        - ./init.sql:/data/application/init.sql
+      - ./init.sql:/data/application/init.sql
 networks:
   web:
     external: true
