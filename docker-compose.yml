@@ -1,25 +1,19 @@
 version: "3.3"
 
 services:
-  frontend:
-    image: firl.us-frontend
+  firl.us:
+    ports:
+      - 80:80
+    image: firl.us
     restart: always
-    container_name: firl.us-frontend
-    networks:
-      - web
-    labels:
-      - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.http.routers.firlus_url-frontend-web.rule=Host(`admin.firl.us`)" # <== Your Domain Name goes here for the htt$
-      - "traefik.http.routers.firlus_url-frontend-web.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
-      - "traefik.http.routers.firlus_url-frontend-web.middlewares=redirect@file" # <== This is a middleware to redirect to https
-      - "traefik.http.routers.firlus_url-frontend-secured.rule=Host(`admin.firl.us`)" # <== Your Domain Name for the https rul$
-      - "traefik.http.routers.firlus_url-frontend-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
-      - "traefik.http.routers.firlus_url-frontend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
-  backend: # <== we aren't going to open :80 here because traefik is going to serve this on entrypoint 'web'
-  ## :80 is already exposed from within the container ##
-    image: firl.us-backend 
-    restart: always
-    container_name: firl.us-backend 
+    container_name: firl.us
+    environment:
+      PORT: 80
+      MYSQL_SERVER: db:3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mysqlpassword
+      MYSQL_DB: firlus_url
+      ADMIN_PASSWORD: admin
     networks:
       - web
       - backend
@@ -42,7 +36,7 @@ services:
       - backend
     command: --init-file /data/application/init.sql
     volumes:
-        - ./init.sql:/data/application/init.sql
+      - ./init.sql:/data/application/init.sql
 networks:
   web:
     external: true
