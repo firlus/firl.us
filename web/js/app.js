@@ -7,6 +7,8 @@ import ShortcutCreator from "./components/ShortcutCreator.vue";
 import Shortcut from "./components/Shortcut.vue";
 import Login from "./components/Login.vue";
 
+Vue.use(Router);
+
 Vue.component("shortcut-list", ShortcutList);
 Vue.component("shortcut-creator", ShortcutCreator);
 Vue.component("shortcut", Shortcut);
