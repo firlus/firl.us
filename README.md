@@ -35,7 +35,7 @@ You also need a MySQL-Database to store the shortcuts.
 
 ### 🐋 Docker
 
-I provide Docker images for this application: [firlus/firl.us](https://hub.docker.com/firlus/firl.us).
+I provide Docker images for this application: [firlus/firl.us](https://hub.docker.com/repository/docker/firlus/firl.us).
 
 The provided containers expose port `80`.
 
