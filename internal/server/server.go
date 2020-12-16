@@ -20,7 +20,7 @@ func Setup(port string, storage store.Store) {
 	router := mux.NewRouter()
 
 	// Routes: Resolve Shortcut
-	router.Methods("GET").Path("/:shortcut").HandlerFunc(api.RedirectToShortcut)
+	router.Methods("GET").Path("/{shortcut}").HandlerFunc(api.RedirectToShortcut)
 
 	// Routes: API
 	apiRouter := router.PathPrefix("/api").Subrouter()
@@ -30,6 +30,9 @@ func Setup(port string, storage store.Store) {
 	apiRouter.Methods("GET").Path("/shortcuts/{path}").HandlerFunc(api.ShortcutGet)
 	apiRouter.Methods("PUT").Path("/shortcuts/{path}").HandlerFunc(api.ShortcutPut)
 	apiRouter.Methods("DELETE").Path("/shortcuts/{path}").HandlerFunc(api.ShortcutDelete)
+
+	// Routes: Serve admin panel
+	router.PathPrefix("/admin/").Handler(http.StripPrefix("/admin/", http.FileServer(http.Dir("./static"))))
 
 	addr := fmt.Sprintf("0.0.0.0:%v", port)
 
