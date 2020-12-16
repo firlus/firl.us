@@ -5,6 +5,14 @@ firl.us provides a small http server in go which provides a way to shorten URLs 
 I started this project mainly to learn the Go programming language and ecosystem.
 Feel free to open issues and pull requests!
 
+## ⚠️ Known issues
+
+> This is work in progress.
+
+- You get no visual feedback when entering a wrong password
+- You can enter the shortcut list despite not having entered a correct password (but you won't be able to view/edit anything, it's just not pleasant that it is possible)
+- Security is **minimal**. Password is stored as clear text in the localStorage. The next version will introduce proper Auth with JWT. Right now it is not safe to use if security has a high priority. If security is something you have to worry about, please regard this as **not secure at all**.
+
 ## Installation
 
 ### 🏗️ Build it yourself
