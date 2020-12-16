@@ -30,6 +30,5 @@ WORKDIR /opt
 COPY docker-entrypoint.sh .
 COPY --from=build-frontend-stage /app/public /opt/static
 COPY --from=build-backend-stage /app/out /opt
-# RUN mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
 EXPOSE 80
 ENTRYPOINT ["./docker-entrypoint.sh"]
