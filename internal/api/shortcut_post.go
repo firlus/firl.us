@@ -1,24 +1,29 @@
 package api
 
 import (
+	"net/http"
+
+	"firlus.dev/firl.us/internal/common"
 	"firlus.dev/firl.us/internal/model"
-	"github.com/gin-gonic/gin"
 )
 
 // ShortcutPost handles the endpoint POST /api/shortcuts
-func ShortcutPost(c *gin.Context) {
-	path := c.PostForm("path")
-	url := c.PostForm("url")
-	// TODO validate parameters
-	shortcut := model.Shortcut{
-		Path: path,
-		URL:  url}
-	if Storage.ShortcutExists(path) {
-		c.AbortWithStatus(409)
-	} else if !shortcut.IsValid() {
-		c.AbortWithStatus(400)
+func ShortcutPost(w http.ResponseWriter, r *http.Request) {
+	password := r.Header.Get("Authorization")
+	if !common.ValidatePassword(password) {
+		http.Error(w, "Wrong password", http.StatusForbidden)
 	} else {
-		Storage.CreateShortcut(&shortcut)
-		c.JSON(200, gin.H{})
+		path := r.FormValue("path")
+		url := r.FormValue("url")
+		shortcut := model.Shortcut{
+			Path: path,
+			URL:  url}
+		if Storage.ShortcutExists(path) {
+			http.Error(w, "Shortcut already exists", http.StatusConflict)
+		} else if !shortcut.IsValid() {
+			http.Error(w, "Invalid shortcut", http.StatusBadRequest)
+		} else {
+			Storage.CreateShortcut(&shortcut)
+		}
 	}
 }

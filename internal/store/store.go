@@ -33,6 +33,19 @@ func (store *Store) ReadShortcut(path string) (*model.Shortcut, error) {
 	return &shortcut, err
 }
 
+// ReadShortcuts returns a list of all available shortcuts
+func (store *Store) ReadShortcuts() (*[]model.Shortcut, error) {
+	rows, err := store.db.Query("SELECT path, url FROM Shortcuts")
+	defer rows.Close()
+	var shortcuts []model.Shortcut
+	for rows.Next() {
+		shortcut := model.Shortcut{}
+		rows.Scan(&shortcut.Path, &shortcut.URL)
+		shortcuts = append(shortcuts, shortcut)
+	}
+	return &shortcuts, err 
+}
+
 // ShortcutExists checks, whether a given shortcut exists
 func (store *Store) ShortcutExists(path string) bool {
 	shortcut, _ := store.ReadShortcut(path)

@@ -1,9 +1,14 @@
 package server
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	"time"
+
 	"firlus.dev/firl.us/internal/api"
 	"firlus.dev/firl.us/internal/store"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 )
 
 // Storage instance to manipulate databse
@@ -11,17 +16,32 @@ import (
 // Setup setup
 func Setup(port string, storage store.Store) {
 	api.Storage = storage
-	router := gin.Default()
-	apiRoute := router.Group("/api")
-	router.GET("/:api", api.RedirectToShortcut)
-	apiRoute.POST("/shortcuts", api.ShortcutPost)
 
-	// This route is different (due to Gin's annoying router.)
-	// Should look like that:
-	// api.GET("/shortcuts/:path", func(c *gin.Context) {
-	router.GET("/:api/:shortcuts/:path", api.ShortcutGet)
-	apiRoute.PUT("/shortcuts/:path", api.ShortcutPut)
-	apiRoute.DELETE("/shortcuts/:path", api.ShortcutDelete)
+	router := mux.NewRouter()
 
-	router.Run(port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	// Routes: Serve admin panel
+	router.PathPrefix("/admin").Handler(http.StripPrefix("/admin/", http.FileServer(http.Dir("./static"))))
+
+	// Routes: Resolve Shortcut
+	router.Methods("GET").Path("/{shortcut}").HandlerFunc(api.RedirectToShortcut)
+
+	// Routes: API
+	apiRouter := router.PathPrefix("/api").Subrouter()
+
+	apiRouter.Methods("GET").Path("/shortcuts").HandlerFunc(api.AllShortcutsGet)
+	apiRouter.Methods("POST").Path("/shortcuts").HandlerFunc(api.ShortcutPost)
+	apiRouter.Methods("GET").Path("/shortcuts/{path}").HandlerFunc(api.ShortcutGet)
+	apiRouter.Methods("PUT").Path("/shortcuts/{path}").HandlerFunc(api.ShortcutPut)
+	apiRouter.Methods("DELETE").Path("/shortcuts/{path}").HandlerFunc(api.ShortcutDelete)
+
+	addr := fmt.Sprintf("0.0.0.0:%v", port)
+
+	server := &http.Server{
+		Handler:      router,
+		Addr:         addr,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(server.ListenAndServe())
 }
