@@ -1,6 +1,6 @@
 {
   "name": "firl.us",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "firl.us provides a small http server in go which provides a way to shorten URLs with your own domain as well as an API and an admin panel to manage shortcuts.",
   "main": "index.js",
   "scripts": {
